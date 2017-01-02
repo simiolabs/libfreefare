@@ -1,5 +1,4 @@
 set(EXAMPLES-SOURCES
-	mifare-desfire-create-value-ndef
         mifare-classic-format
         mifare-classic-read-ndef
         mifare-classic-write-ndef
@@ -13,6 +12,9 @@ set(EXAMPLES-SOURCES
         mifare-desfire-ev1-configure-default-key
         mifare-desfire-ev1-configure-random-uid
         mifare-ultralight-info
+        mifare-desfire-create-value-ndef
+        mifare-desfire-decrement
+        mifare-desfire-increment
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../libfreefare)

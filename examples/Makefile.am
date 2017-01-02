@@ -16,7 +16,9 @@ bin_PROGRAMS = felica-lite-dump \
 	       mifare-desfire-read-ndef \
 	       mifare-desfire-write-ndef \
 	       mifare-ultralight-info \
-	       mifare-desfire-create-value-ndef
+	       mifare-desfire-create-value-ndef \
+	       mifare-desfire-decrement \
+	       mifare-desfire-increment
 
 felica_lite_dump_SOURCES = felica-lite-dump.c
 felica_lite_dump_LDADD = $(top_builddir)/libfreefare/libfreefare.la
@@ -63,7 +65,13 @@ mifare_desfire_write_ndef_LDADD = $(top_builddir)/libfreefare/libfreefare.la
 mifare_ultralight_info_SOURCES = mifare-ultralight-info.c
 mifare_ultralight_info_LDADD = $(top_builddir)/libfreefare/libfreefare.la
 
-mifare_desfire_create_value_ndef_SOURCES = mifare-ultralight-info.c
+mifare_desfire_create_value_ndef_SOURCES = mifare-desfire-create-value-ndef.c
 mifare_desfire_create_value_ndef_LDADD = $(top_builddir)/libfreefare/libfreefare.la
+
+mifare_desfire_decrement_SOURCES = mifare-desfire-decrement.c
+mifare_desfire_decrement_LDADD = $(top_builddir)/libfreefare/libfreefare.la
+
+mifare_desfire_increment_SOURCES = mifare-desfire-increment.c
+mifare_desfire_increment_LDADD = $(top_builddir)/libfreefare/libfreefare.la
 
 CLEANFILES=	*.gcno
