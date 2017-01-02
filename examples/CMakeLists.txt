@@ -1,4 +1,5 @@
 set(EXAMPLES-SOURCES
+	mifare-desfire-create-value-ndef
         mifare-classic-format
         mifare-classic-read-ndef
         mifare-classic-write-ndef
