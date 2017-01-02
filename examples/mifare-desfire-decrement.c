@@ -60,12 +60,13 @@ struct {
 static void
 usage(char *progname)
 {
-    fprintf (stderr, "This application writes a NDEF payload into a Mifare DESFire formatted as NFC Forum Type 4 Tag.\n");
-    fprintf (stderr, "usage: %s [-y] -i FILE [-k 11223344AABBCCDD]\n", progname);
+    fprintf (stderr, "This application increments a value and writes a NDEF payload into a Mifare DESFire formatted as NFC Forum Type 4 Tag.\n");
+    fprintf (stderr, "usage: %s [-y] -i FILE [-k 11223344AABBCCDD] -v VALUE [-v 123]\n", progname);
     fprintf (stderr, "\nOptions:\n");
     fprintf (stderr, "  -y     Do not ask for confirmation\n");
     fprintf (stderr, "  -i     Use FILE as NDEF message to write on card (\"-\" = stdin)\n");
     fprintf (stderr, "  -k     Provide another NDEF Tag Application key than the default one\n");
+    fprintf (stderr, "  -v     Credit value\n");
 }
 
 int
@@ -77,6 +78,7 @@ main(int argc, char *argv[])
     FreefareTag *tags = NULL;
 
     char *ndef_input = NULL;
+    char *value_input = NULL;
     while ((ch = getopt (argc, argv, "hyi:k:")) != -1) {
         switch (ch) {
         case 'h':
@@ -101,6 +103,9 @@ main(int argc, char *argv[])
                 n >>= 8;
             }
             break;
+        case 'v':
+			value_input = optarg;
+			break;
         default:
             usage(argv[0]);
             exit (EXIT_FAILURE);
@@ -281,6 +286,29 @@ main(int argc, char *argv[])
 		res = mifare_desfire_write_data(tags[i], file_no, 0, ndef_msg_len, (uint8_t *) ndef_msg);
 		if (res < 0)
 		    errx (EXIT_FAILURE, " Write data failed");
+		    
+		int32_t amount = atoi(value_input);	
+		int32_t value;
+		// Get value stored on card
+		res = mifare_desfire_get_value (tags[i], 0x03, &value);
+		if (res < 0)
+			errx (EXIT_FAILURE, "Get value failed");
+		else
+			printf("Old value: %d\n", value);
+		// Increment value data
+		res = mifare_desfire_credit (tags[i], 0x03, amount);
+		if (res < 0)
+			errx (EXIT_FAILURE, "Credit failed");
+		// Commit transaction
+		res = mifare_desfire_commit_transaction (tags[i]);
+		if (res < 0)
+			errx (EXIT_FAILURE, "CommitTransaction failed");
+		// Get value stored on card
+		res = mifare_desfire_get_value (tags[i], 0x03, &value);
+		if (res < 0)
+			errx (EXIT_FAILURE, "Get value failed");
+		else
+			printf("New value: %d\n", value);
 
 		free(cc_data);
 		mifare_desfire_key_free (key_app);
